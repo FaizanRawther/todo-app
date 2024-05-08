@@ -1,15 +1,28 @@
 import FreeSimpleGUI as fsg
-label1=fsg.Text("Enter Feet: ")
-input_text1=fsg.Input()
+from converter import convertFeetInches_to_Meters
+feet_label=fsg.Text("Enter Feet: ")
+feet_input=fsg.Input(key="feet")
 
-label2=fsg.Text("Enter inches: ")
-input_text2=fsg.Input()
+inch_label=fsg.Text("Enter inches: ")
+inch_input=fsg.Input(key="inch")
 
 button_convert=fsg.Button("Convert")
+output_label=fsg.Text("",key="output")
 
 window=fsg.Window("Converter",
-                  layout=[[label1,input_text1],
-                          [label2,input_text2]
-                          ,[button_convert]])
-window.read()
+                  layout=[[feet_label,feet_input],
+                          [inch_label,inch_input]
+                          ,[button_convert,output_label]])
+
+
+while True:
+    event, values=window.read()
+    print(event,values)
+    feet=float(values["feet"])
+    inches=float(values["inch"])
+    result=convertFeetInches_to_Meters(feet,inches)
+    window["output"].update(value=f"{result} m", text_color="white")
+    match event:
+        case fsg.WIN_CLOSED:
+            break
 window.close()
