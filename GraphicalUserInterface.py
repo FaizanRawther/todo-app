@@ -1,7 +1,9 @@
 import FreeSimpleGUI as fsg
-
-import functions
 import functions as func
+import time
+
+fsg.theme("DarkPurple4")
+clock=fsg.Text('',key='clock')
 label=fsg.Text("Type in to-do")
 input_box=fsg.InputText(tooltip="Enter Todo",key='todo')
 add_button=fsg.Button("Add")
@@ -14,11 +16,15 @@ complete_button=fsg.Button("Complete")
 exit_button=fsg.Button("Exit")
 
 window=fsg.Window("My Todo App",
-                  layout=[[[label],
-                           [input_box,add_button],[list_box,edit_button,complete_button],[exit_button]]],
+                  layout=[[clock],
+                          [label],
+                          [input_box,add_button],
+                          [list_box,edit_button,complete_button],
+                          [exit_button]],
                   font=('helvetica',14))
 while True:
-    event,values=window.read()
+    event,values=window.read(timeout=10)
+    window["clock"].update(value=time.strftime("%b %d, %Y %H:%M:%S"))
     print(event)
     print(values)
     print(values['todos'])
@@ -30,20 +36,27 @@ while True:
             func.write_todos(todos)
             window['todos'].update(values=todos)
         case "Edit":
-            todo_to_edit=values['todos'][0]
-            new_todo=values['todo']
-            todos=func.read_todos()
-            index=todos.index(todo_to_edit)
-            todos[index]=new_todo
-            func.write_todos(todos)
-            window['todos'].update(values=todos)
+            try:
+                todo_to_edit=values['todos'][0]
+                new_todo=values['todo']
+
+                todos=func.read_todos()
+                index=todos.index(todo_to_edit)
+                todos[index]=new_todo
+                func.write_todos(todos)
+                window['todos'].update(values=todos)
+            except IndexError:
+                fsg.popup("Please select the item first",font=("Helvetica",20))
         case "Complete":
-            todo_to_complete=values['todos'][0]
-            todos=functions.read_todos()
-            todos.remove(todo_to_complete)
-            functions.write_todos(todos)
-            window['todos'].update(values=todos)
-            window['todo'].update(value="")
+            try:
+                todo_to_complete=values['todos'][0]
+                todos=func.read_todos()
+                todos.remove(todo_to_complete)
+                func.write_todos(todos)
+                window['todos'].update(values=todos)
+                window['todo'].update(value="")
+            except IndexError:
+                fsg.popup("Please select the item first", font=("Helvetica", 20))
         case "Exit":
             break
         case "todos":
