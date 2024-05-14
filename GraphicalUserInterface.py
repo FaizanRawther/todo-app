@@ -6,13 +6,13 @@ fsg.theme("DarkPurple4")
 clock=fsg.Text('',key='clock')
 label=fsg.Text("Type in to-do")
 input_box=fsg.InputText(tooltip="Enter Todo",key='todo')
-add_button=fsg.Button("Add")
+add_button=fsg.Button(size=2,image_source="add.png", mouseover_colors="LightBlue",tooltip="Add",key="Add")
 
 list_box=fsg.Listbox(values=func.read_todos(),
                      key='todos',
                      enable_events=True, size=[45,10])
 edit_button=fsg.Button("Edit")
-complete_button=fsg.Button("Complete")
+complete_button=fsg.Button(key="Complete",image_source="complete.png",mouseover_colors="Green",tooltip="Complete",size=2)
 exit_button=fsg.Button("Exit")
 
 window=fsg.Window("My Todo App",
